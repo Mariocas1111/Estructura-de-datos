@@ -1,0 +1,67 @@
+#include <iostream>
+
+using namespace std;
+int factorial(int n);
+int cuadrados(int n);
+double serie(double x, int n);
+
+
+int main(){
+    int num,opcion;
+    double x,resultado;
+    do {
+        cout << "Menu" << endl;
+        cout << "1.Factorial." << endl;
+        cout << "2.Suma de cuadrados" << endl;
+        cout << "3.Double serie" << endl;
+        cout << "0.Salir." << endl;
+        cout << "Ingrese una opcion: ";
+        cin >> opcion;
+        switch (opcion) {
+        case 1:
+            cout << "Ingrese el numero a calcular el factorial: ";
+            cin >> num;
+            cout << "El factorial de " << num << " es : " << factorial(num)<<endl;
+            break;
+        case 2:
+            cout << "Ingrese el numero a calcular en la suma cuadrados: ";
+            cin >> num;
+            cout << "La suma de cuadrados de " << num << " es : " << cuadrados(num)<<endl;
+            break;
+        case 3:
+            cout << "Ingrese el valor de x : ";
+            cin >> x;
+            cout << "Ingrese el valor de num: ";
+            cin >> num;
+            resultado = serie(x, num);
+            cout << " La suma de la serie es: " <<resultado<<endl;
+            break;
+        case 0:
+            cout << "Usted cerro el programa." << endl;
+            opcion = 0;
+            break;
+        default:
+            cout << "Error" << endl;
+        }
+    } while (opcion != 0);
+    return 0;
+}
+
+int factorial(int n) {
+    if ((n == 0) || (n == 1))
+        return 1;
+    else
+        return factorial(n - 1) * n;
+}
+int cuadrados(int n) {
+    if (n == 1) 
+        return 1;
+    else
+        return n * n + cuadrados(n - 1);
+}
+double serie(double x, int n) {
+    if (n == 0) 
+        return 0;
+    else
+        return x * (1+ serie(x,n - 1));
+}
