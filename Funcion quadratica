@@ -1,0 +1,43 @@
+
+#include <iostream>
+#include <math.h>
+using namespace std;
+float cuadratica(float a, float b, float c, float &x1,float &x2);
+int main()
+{
+	float a,b,c,d, x1, x2;
+	cout<<"Ingrese su a, b y c."<<endl;
+	cin>>a;
+	cin>>b;
+	cin>>c;
+	d=cuadratica(a,b,c,x1,x2);
+	if (d>0)
+		cout<<"Soluciones reales X1 es igual a "<<x1<<" y X2 es igual a "<<x2<<endl;
+	else {
+		if (d==0)
+			cout<<"la unica solucion es "<<x1<<"."<<endl;
+		else
+			cout<<"Soluciones imaginarias"<<"X1 es igual a "<<x1<<"+"<<x2<<"i"<<" y X2 es igual a "<<x1<<"-"<<x2<<"i"<<endl;
+
+	}
+}
+	float cuadratica(float a, float b, float c,float &x1,float &x2)
+	{
+		float d= (b*b-4*a*c);
+		if(d>0) {
+			x1=((-b+sqrt(d))/(2*a));
+			x2=((-b-sqrt(d))/(2*a));
+		}
+		else {
+			if(d==0)
+				x1=((-b)/(2*a));
+				else {
+					x1=-b/(2*a);
+					x2= sqrt(-d)/(2*a);
+				}
+
+		}
+		return d;
+	}
+
+
