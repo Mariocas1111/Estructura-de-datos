@@ -1,0 +1,9 @@
+#include <iostream>
+#include "Triangulo.h"
+using namespace std;
+int main()
+{
+	Triangulo triangle;
+	cout << "El area de el triangulo es: " << triangle.calculararea(5, 6);
+	return 0;
+}
