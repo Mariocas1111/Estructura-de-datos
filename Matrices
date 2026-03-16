@@ -1,0 +1,99 @@
+#include <iostream>
+#define MAXCOL 20
+#define MAXROW 20
+using namespace std;
+
+void cargar(int matrix[MAXROW][MAXCOL], int n, int m);
+void mostrar(int matrix[MAXROW][MAXCOL], int n, int m);
+void dayagonal(int matrix[MAXROW][MAXCOL], int n, int m);
+
+int main()
+{
+    int tamrow, tamcol, matrix[MAXROW][MAXCOL], o;
+
+    do {
+
+        cout << "MENU" << endl;
+        cout << "1. Cargar" << endl;
+        cout << "2. Mostrar" << endl;
+        cout << "3. Cargar en Diagonal" << endl;
+        cout << "0. Salir" << endl;
+
+        cin >> o;
+
+        switch (o) {
+
+        case 1:
+            do {
+                cout << "Ingrese el numero de filas: ";
+                cin >> tamrow;
+            } while ((tamrow <= 0) || (tamrow > MAXROW));
+
+            do {
+                cout << "Ingrese el numero de columnas: ";
+                cin >> tamcol;
+            } while ((tamcol <= 0) || (tamcol > MAXCOL));
+
+            cargar(matrix, tamrow, tamcol);
+            break;
+
+        case 2:
+            mostrar(matrix, tamrow, tamcol);
+            break;
+
+        case 3:
+            do {
+                cout << "Ingrese el numero de filas: ";
+                cin >> tamrow;
+            } while ((tamrow <= 0) || (tamrow > MAXROW));
+
+            do {
+                cout << "Ingrese el numero de columnas: ";
+                cin >> tamcol;
+            } while ((tamcol <= 0) || (tamcol > MAXCOL));
+
+            dayagonal(matrix, tamrow, tamcol);
+            mostrar(matrix, tamrow, tamcol);
+            break;
+
+        case 0:
+            return 0;
+
+        }
+
+    } while (o != 0);
+}
+
+void cargar(int matrix[MAXROW][MAXCOL], int n, int m) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            cout << "Matriz[" << i + 1 << "][" << j + 1 << "] = ";
+            cin >> matrix[i][j];
+        }
+    }
+}
+
+void mostrar(int matrix[MAXROW][MAXCOL], int n, int m) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            cout << matrix[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+void dayagonal(int matrix[MAXROW][MAXCOL], int n, int m) {
+    int num = 1;
+
+    for (int d = 0; d < n + m - 1; d++) {
+        for (int i = 0; i < n; i++) {
+
+            int j = d - i;
+
+            if (j >= 0 && j < m) {
+                matrix[i][j] = num;
+                num++;
+            }
+        }
+    }
+}
