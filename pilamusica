@@ -1,0 +1,146 @@
+#pragma once
+#include <string>
+using namespace std;
+
+class Datos {
+public:
+    string Artista;
+    string Album;
+    string Cancion;
+    int Duracion;
+    int Anio;
+
+    Datos() {
+        Artista = "Unknow";
+        Album = "Unknow";
+        Cancion = "Unknow";
+        Duracion = 0;
+        Anio = 0;
+    }
+};
+
+#pragma once
+#include "Nodo.h"
+
+void Encolar(Nodo*& inicio, Nodo*& fin);
+void Desencolar(Nodo*& inicio, Nodo*& fin);
+void Mostrar(Nodo* inicio);
+
+#include <iostream>
+#include "Cola.h"
+using namespace std;
+
+void Encolar(Nodo*& inicio, Nodo*& fin) {
+    Nodo* Elemento = new Nodo;
+    Elemento->puntero = NULL;
+
+    if (inicio == NULL) {
+        inicio = fin = Elemento;
+    }
+    else {
+        fin->puntero = Elemento;
+        fin = Elemento;
+    }
+
+    cout << "Artista: "; cin >> Elemento->dato.Artista;
+    cout << "Album: "; cin >> Elemento->dato.Album;
+    cout << "Cancion: "; cin >> Elemento->dato.Cancion;
+    cout << "Duracion: "; cin >> Elemento->dato.Duracion;
+    cout << "Anio: "; cin >> Elemento->dato.Anio;
+}
+
+
+void Desencolar(Nodo*& inicio, Nodo*& fin) {
+    if (inicio != NULL) {
+
+        Nodo* temp = inicio;
+
+        cout << "Artista: " << inicio->dato.Artista << endl;
+        cout << "Album: " << inicio->dato.Album << endl;
+        cout << "Cancion: " << inicio->dato.Cancion << endl;
+        cout << "Duracion: " << inicio->dato.Duracion << endl;
+        cout << "Anio: " << inicio->dato.Anio << endl;
+
+        inicio = inicio->puntero;
+
+        if (inicio == NULL) {
+            fin = NULL;
+        }
+
+        delete temp; 
+    }
+    else {
+        cout << "La cola esta vacia" << endl;
+    }
+}
+
+void Mostrar(Nodo* inicio) {
+    Nodo* aux = inicio;
+
+    if (aux == NULL) {
+        cout << "La cola esta vacia" << endl;
+        return;
+    }
+
+    while (aux != NULL) {
+        cout << "------------------" << endl;
+        cout << "Artista: " << aux->dato.Artista << endl;
+        cout << "Album: " << aux->dato.Album << endl;
+        cout << "Cancion: " << aux->dato.Cancion << endl;
+        cout << "Duracion: " << aux->dato.Duracion << endl;
+        cout << "Anio: " << aux->dato.Anio << endl;
+
+        aux = aux->puntero;
+    }
+}
+
+#pragma once
+#include "Datos.h"
+
+class Nodo {
+public:
+    Datos dato;
+    Nodo* puntero;
+
+    Nodo() {
+        puntero = NULL;
+    }
+};
+
+#include <iostream>
+#include "Cola.h"
+using namespace std;
+
+int main() {
+
+    Nodo* inicio = NULL;
+    Nodo* fin = NULL;
+
+    int opc;
+
+    do {
+        cout << "\n1. ENCOLAR" << endl;
+        cout << "2. DESENCOLAR" << endl;
+        cout << "3. MOSTRAR" << endl;
+        cout << "4. SALIR" << endl;
+        cout << "Opcion: "; cin >> opc;
+
+        switch (opc) {
+
+        case 1:
+            Encolar(inicio, fin);
+            break;
+        
+        case 2:
+            Desencolar(inicio, fin);
+            break;
+
+        case 3:
+            Mostrar(inicio);
+            break;
+        }
+
+    } while (opc != 4);
+
+    return 0;
+}
