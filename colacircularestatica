@@ -1,0 +1,118 @@
+#include <iostream>
+#include <sstream>  
+using namespace std;
+
+#define MAX 10
+
+class ColaCircular {
+private:
+    string datos[MAX];
+    int frente;
+    int fin;
+    int cantidad;
+
+public:
+    ColaCircular();
+
+    bool estaLlena();
+       
+
+    bool estaVacia();
+
+    bool encolar(string valor);
+
+    string desencolar();
+
+    void mostrar();
+
+    
+};
+#include "ColaCircular.h"
+#include <iostream>
+#include <sstream>  
+using namespace std;
+
+#define MAX 10
+
+
+ ColaCircular::ColaCircular() {
+        frente = 0;
+        fin = -1;
+        cantidad = 0;
+    }
+
+    bool ColaCircular::estaLlena() {
+        return cantidad == MAX;
+    }
+
+    bool ColaCircular::estaVacia() {
+        return cantidad == 0;
+    }
+
+    bool ColaCircular::encolar(string valor) {
+        if (estaLlena()) return false;
+
+        fin = (fin + 1) % MAX;
+        datos[fin] = valor;
+        cantidad++;
+        return true;
+    }
+
+    string ColaCircular::desencolar() {
+        if (estaVacia()) return "COLA VACÍA";
+
+        string valor = datos[frente];
+        frente = (frente + 1) % MAX;
+        cantidad--;
+        return valor;
+    }
+
+    void ColaCircular::mostrar() {
+        if (estaVacia()) {
+            cout << "Cola vacía.\n";
+            return;
+        }
+
+        cout << "Contenido de la cola: ";
+        int i = frente;
+        for (int cont = 0; cont < cantidad; cont++) {
+            cout << "[" << datos[i] << "] ";
+            i = (i + 1) % MAX;
+        }
+        cout << endl;
+    }
+#include "ColaCircular.h"
+#include <iostream>
+#include <sstream>  
+using namespace std;
+
+#define MAX 10
+
+int main() {
+    ColaCircular cola;
+    string linea;
+
+    cout << "Ingrese palabras separadas por espacios: ";
+    getline(cin, linea);
+
+    stringstream ss(linea);
+    string palabra;
+
+    
+    while (ss >> palabra) {
+        if (!cola.encolar(palabra)) {
+            cout << "Cola llena. No se pudo insertar: " << palabra << endl;
+        }
+    }
+
+ 
+    cola.mostrar();
+
+   
+    cout << "\nAtendiendo cola...\n";
+    while (!cola.estaVacia()) {
+        cout << "Atendido: " << cola.desencolar() << endl;
+    }
+
+    return 0;
+}
