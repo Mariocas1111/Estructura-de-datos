@@ -1,0 +1,139 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Nodo {
+public:
+    string valor;
+    Nodo* sig;
+
+    Nodo(string v);
+};
+#include <iostream>
+#include <string>
+#include "Nodo.h"
+using namespace std;
+
+
+
+class colacirculard {
+private:
+    Nodo* frente;
+    Nodo* final;
+
+public:
+    colacirculard();
+    ~colacirculard();
+    
+void encolar(const string& valor);
+
+string desencolar();
+
+bool estaVacia();
+void mostrar();
+};
+#include "Nodo.h"
+#include<iostream>
+#include <string>
+using namespace std;
+
+Nodo::Nodo (string v) {
+	valor=v; 
+	sig = nullptr;
+}
+#include <iostream>
+#include <string>
+#include "Nodo.h"
+#include "colacirculard.h"
+using namespace std;
+colacirculard::colacirculard() : frente(nullptr), final(nullptr) {}
+
+colacirculard::~colacirculard() {
+    while (!estaVacia()) {
+        desencolar();
+    }
+}
+
+
+void colacirculard::encolar(const string& valor) {
+    Nodo* nuevo = new Nodo(valor);
+
+    if (!frente) {
+
+        frente = final = nuevo;
+        nuevo->sig = nuevo;
+    }
+    else {
+        nuevo->sig = frente;
+        final->sig = nuevo;
+        final = nuevo;
+    }
+}
+
+string colacirculard::desencolar() {
+    if (estaVacia()) return "COLA VACÍA";
+
+    string dato;
+    if (frente == final) {
+
+        dato = frente->valor;
+        delete frente;
+        frente = final = nullptr;
+    }
+    else {
+        Nodo* temp = frente;
+        dato = temp->valor;
+        frente = frente->sig;
+        final->sig = frente;
+        delete temp;
+    }
+    return dato;
+}
+
+
+bool colacirculard::estaVacia() {
+    return frente == nullptr;
+}
+
+
+void colacirculard::mostrar() {
+    if (estaVacia()) {
+        cout << "Cola vacía.\n";
+        return;
+    }
+
+    Nodo* actual = frente;
+    cout << "Cola: ";
+    do {
+        cout << "[" << actual->valor << "] ";
+        actual = actual->sig;
+    } while (actual != frente);
+    cout << endl;
+}
+#include <iostream>
+#include <string>
+#include "Nodo.h"
+#include "colacirculard.h"
+using namespace std;
+
+int main() {
+    colacirculard cola;
+
+    cola.encolar("Juan");
+    cola.encolar("Maria");
+    cola.encolar("Pedro");
+
+    cola.mostrar();
+
+    cout << "Atendiendo: " << cola.desencolar() << endl;
+    cola.mostrar();
+
+    cola.encolar("Luis");
+    cola.mostrar();
+
+    cout << "Atendiendo: " << cola.desencolar() << endl;
+    cout << "Atendiendo: " << cola.desencolar() << endl;
+    cola.mostrar();
+
+    return 0;
+}
