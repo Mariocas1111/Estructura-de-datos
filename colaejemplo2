@@ -1,0 +1,117 @@
+#include <iostream>
+
+using namespace std;
+
+typedef char DATA_TYPE;
+class nodo
+{
+public:
+		DATA_TYPE data;
+		nodo* next;
+
+};
+
+#include <iostream>
+#include "nodo.h"
+using namespace std;
+
+typedef char DATA_TYPE;
+
+class Queuedin
+{
+
+
+	private:
+		
+		int ITEMS, ITEMSIZE, empty;
+		nodo* cola, * cabeza;
+
+	public:
+
+		Queuedin();
+		~Queuedin();
+		DATA_TYPE put(DATA_TYPE valor);
+		DATA_TYPE get();
+	};
+
+#include <iostream>
+#include "Queuedin.h"
+#include "nodo.h"
+using namespace std;
+typedef char DATA_TYPE;
+
+Queuedin::Queuedin() { 
+	cola=NULL;  cabeza=NULL; ITEMS=0; ITEMSIZE=sizeof(DATA_TYPE) }
+
+Queuedin::~Queuedin() {}
+
+
+DATA_TYPE Queuedin::put(DATA_TYPE valor)
+{
+	nodo* temp;
+
+	temp = new nodo;
+	if (temp == NULL) return -1;
+
+	ITEMS++;
+	temp->data = valor;
+	temp->next = NULL;
+
+	if (cabeza == NULL)
+	{
+		cabeza = temp;
+		cola = temp;
+	}
+	else
+	{
+		cola->next = temp;
+		cola = temp;
+	}
+	return valor;
+}
+
+int Queuedin::empty() { return ITEMS == 0; }
+
+DATA_TYPE Queuedin::get()
+{
+	nodo* temp;
+	DATA_TYPE d;
+
+	if (empty()) return -1;
+
+	d = cabeza->data;
+	temp = cabeza->next;
+	if (cabeza) delete cabeza;
+	cabeza = temp;
+	ITEMS--;
+	return d;
+}
+
+
+#include <iostream>
+#include "Queuedin.h"
+#include "nodo.h"
+using namespace std;
+
+typedef char DATA_TYPE;
+
+int main()
+{
+    Queuedin s;
+    DATA_TYPE d;
+
+    // llenando la cola
+    for (d = 'A'; d <= 'Z'; d++) {
+        s.put(d);
+        cout << d << " ";
+    }
+
+    cout << endl;
+    // vaciando la cola
+    while (!s.empty())
+        cout << (DATA_TYPE)s.get() << " ";
+
+    cout << "\nPara terminar presione <Enter>...";
+    cin.get();
+    return 0;
+}
