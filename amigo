@@ -1,0 +1,422 @@
+#include <iostream>
+#include <conio.h>
+#include "ABMamigo.h"
+
+using namespace std;
+
+int main() {
+
+	ABMamigo* amig = new ABMamigo("amigos.dat");
+
+	int op;
+
+	do {
+
+		system("cls");
+
+		cout << endl;
+		cout << "=========== MENU ABM AMIGOS ===========" << endl;
+		cout << "1.- Adicionar nuevo amigo" << endl;
+		cout << "2.- Listar amigos" << endl;
+		cout << "3.- Buscar registro" << endl;
+		cout << "4.- Eliminar registro" << endl;
+		cout << "5.- Modificar registro" << endl;
+		cout << "0.- Salir" << endl;
+		cout << "=======================================" << endl;
+		cout << "Seleccione opcion : ";
+		cin >> op;
+
+		switch (op) {
+
+		case 1:
+
+			amig->adicionarNuevo();
+
+			break;
+
+		case 2:
+
+			amig->listar();
+
+			break;
+
+		case 3:
+
+			amig->buscarReg();
+
+			break;
+
+		case 4:
+
+			amig->eliminarReg();
+
+			break;
+
+		case 5:
+
+			amig->modificarReg();
+
+			break;
+
+		case 0:
+
+			cout << endl << "Fin del programa...";
+			break;
+
+		default:
+
+			cout << endl << "Opcion incorrecta";
+		}
+
+		cout << endl << endl;
+		cout << "Presione una tecla para continuar...";
+		_getch();
+
+	} while (op != 0);
+
+	return 0;
+}
+#include "ABMamigo.h"
+#include <conio.h>
+
+ABMamigo::ABMamigo(string nomArch) {
+	nomArchivo = nomArch;
+}
+
+void ABMamigo::introducirDatos(Amigo* newReg) {
+
+	string	nombre;
+	int		edad;
+	char	sexo;
+
+	cout << endl << endl;
+	cout << "Introducir datos --->>> " << endl;
+
+	cin.ignore();
+
+	cout << "Nombre : ";
+	getline(cin, nombre);
+
+	cout << "Edad : ";
+	cin >> edad;
+
+	cout << "Sexo <F/M> : ";
+	cin >> sexo;
+
+	newReg->setAmigo(nombre, edad, sexo);
+}
+
+void ABMamigo::mostrarRegistro(int nroReg) {
+
+	cout << endl;
+
+	cout << nroReg << ".-  "
+		<< amig->getNombre() << "  "
+		<< amig->getEdad() << "  "
+		<< amig->getSexo() << "  "
+		<< amig->getEstado();
+}
+
+void ABMamigo::adicionarNuevo() {
+
+	ofstream fsalida(nomArchivo, ios::app | ios::binary);
+
+	amig = new Amigo();
+
+	introducirDatos(amig);
+
+	amig->guardarArchivo(fsalida);
+
+	fsalida.close();
+}
+
+void ABMamigo::listar() {
+
+	int cr = 0;
+
+	cout << endl << endl;
+	cout << "Los registros son --->>> " << endl;
+
+	amig = new Amigo();
+
+	ifstream fentrada(nomArchivo, ios::in | ios::binary);
+
+	while (amig->leerArchivo(fentrada) == true) {
+
+		cr++;
+
+		if (amig->getEstado() == 'A') {
+
+			mostrarRegistro(cr);
+		}
+	}
+
+	fentrada.close();
+}
+
+int ABMamigo::buscarReg() {
+
+	int nroReg;
+
+	cout << endl;
+	cout << "Numero de registro : ";
+	cin >> nroReg;
+
+	amig = new Amigo();
+
+	ifstream fentrada(nomArchivo, ios::in | ios::binary);
+
+	if (amig->buscar(fentrada, nroReg) == true) {
+
+		mostrarRegistro(nroReg);
+	}
+	else {
+
+		cout << endl << "Registro no existe";
+
+		nroReg = -1;
+	}
+
+	fentrada.close();
+
+	return(nroReg);
+}
+
+void ABMamigo::eliminarReg() {
+
+	int nroReg;
+
+	nroReg = buscarReg();
+
+	if (nroReg > 0) {
+
+		fstream fes(nomArchivo, ios::in | ios::out | ios::binary);
+
+		amig = new Amigo();
+
+		if (amig->eliminar(fes, nroReg) == true) {
+
+			cout << endl << "Registro eliminado";
+		}
+		else {
+
+			cout << endl << "Registro no existe";
+		}
+
+		fes.close();
+	}
+}
+
+void ABMamigo::modificarReg() {
+
+	int nroReg;
+
+	nroReg = buscarReg();
+
+	if (nroReg > 0) {
+
+		fstream fes(nomArchivo, ios::in | ios::out | ios::binary);
+
+		amig = new Amigo();
+
+		introducirDatos(amig);
+
+		if (amig->modificar(fes, nroReg) == true) {
+
+			cout << endl << "Registro modificado";
+		}
+		else {
+
+			cout << endl << "Registro no existe";
+		}
+
+		fes.close();
+	}
+}
+#ifndef ABMAMIGO_H
+#define ABMAMIGO_H
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include "Amigo.h"
+
+using namespace std;
+
+class ABMamigo {
+
+private:
+	string nomArchivo;
+	Amigo* amig;
+
+public:
+
+	ABMamigo(string nomArch);
+
+	void introducirDatos(Amigo* newReg);
+
+	void mostrarRegistro(int nroReg);
+
+	void adicionarNuevo();
+
+	void listar();
+
+	int buscarReg();
+
+	void eliminarReg();
+
+	void modificarReg();
+};
+
+#endif
+#include "Amigo.h"
+#include <cstring>
+
+Amigo::Amigo() {
+	strcpy_s(nombre, "");
+	edad = 0;
+	sexo = ' ';
+	estado = ' ';
+}
+
+Amigo::Amigo(string nom, int ed, char sx) {
+	strcpy_s(nombre, nom.c_str());
+	edad = ed;
+	sexo = sx;
+	estado = 'A';
+}
+
+void Amigo::setAmigo(string nom, int ed, char sx) {
+	strcpy_s(nombre, nom.c_str());
+	edad = ed;
+	sexo = sx;
+	estado = 'A';
+}
+
+string Amigo::getNombre() {
+	return(nombre);
+}
+
+int Amigo::getEdad() {
+	return(edad);
+}
+
+char Amigo::getSexo() {
+	return(sexo);
+}
+
+char Amigo::getEstado() {
+	return(estado);
+}
+
+void Amigo::guardarArchivo(ofstream& fsalida) {
+	fsalida.write(reinterpret_cast<char*>(this), sizeof(Amigo));
+}
+
+bool Amigo::leerArchivo(ifstream& fentrada) {
+	bool k = false;
+
+	if (fentrada.read(reinterpret_cast<char*>(this), sizeof(Amigo))) {
+		k = true;
+	}
+
+	return(k);
+}
+
+bool Amigo::buscar(ifstream& fentrada, int nroReg) {
+	bool k = false;
+
+	fentrada.seekg(sizeof(Amigo) * (nroReg - 1), ios::beg);
+
+	if (fentrada.read(reinterpret_cast<char*>(this), sizeof(Amigo))) {
+		k = true;
+	}
+
+	return(k);
+}
+
+bool Amigo::eliminar(fstream& fes, int nroReg) {
+	bool k = false;
+
+	fes.seekg(sizeof(Amigo) * (nroReg - 1), ios::beg);
+
+	fes.read(reinterpret_cast<char*>(this), sizeof(Amigo));
+
+	if (!fes.eof()) {
+
+		estado = 'E';
+
+		fes.seekp(sizeof(Amigo) * (nroReg - 1), ios::beg);
+
+		fes.write(reinterpret_cast<char*>(this), sizeof(Amigo));
+
+		k = true;
+	}
+
+	return(k);
+}
+
+bool Amigo::modificar(fstream& fes, int nroReg) {
+	bool k = false;
+
+	fes.seekg(sizeof(Amigo) * (nroReg - 1), ios::beg);
+
+	fes.read(reinterpret_cast<char*>(this), sizeof(Amigo));
+
+	if (!fes.eof()) {
+
+		fes.seekp(sizeof(Amigo) * (nroReg - 1), ios::beg);
+
+		fes.write(reinterpret_cast<char*>(this), sizeof(Amigo));
+
+		k = true;
+	}
+
+	return(k);
+}
+
+int Amigo::getTamBytesRegistro() {
+	return(sizeof(Amigo));
+}
+#ifndef AMIGO_H
+#define AMIGO_H
+
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+class Amigo {
+private:
+	char	nombre[30];
+	int		edad;
+	char	sexo;
+	char	estado;		// A = Activo, E = Eliminado
+
+public:
+
+	Amigo();
+	Amigo(string nom, int ed, char sx);
+
+	void setAmigo(string nom, int ed, char sx);
+
+	string getNombre();
+	int getEdad();
+	char getSexo();
+	char getEstado();
+
+	void guardarArchivo(ofstream& fsalida);
+
+	bool leerArchivo(ifstream& fentrada);
+
+	bool eliminar(fstream& fes, int nroReg);
+
+	bool modificar(fstream& fes, int nroReg);
+
+	bool buscar(ifstream& fentrada, int nroReg);
+
+	int getTamBytesRegistro();
+};
+
+#endif
